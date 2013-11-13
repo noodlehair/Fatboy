@@ -4,21 +4,18 @@
 #include <stdio.h>					
 #include "ImageIO.h"
 
-#define	MAX_PARTICLES	5000		
+#define	MAX_PARTICLES	2000		
 
 
 
-bool	keys[256];					
+				
 bool	active=TRUE;				
-bool	fullscreen=TRUE;			
-bool	rainbow=false;				
-bool	sp;							
-bool	rp;							
+					
 
 float	slowdown=2.0f;				
 float	xspeed;						
 float	yspeed;						
-float	zoom=-40.0f;				
+float	zoom=-20.0f;				
 
 GLuint	loop;						
 GLuint	col;						
@@ -49,17 +46,14 @@ particles;							// Particles Structure
 particles particle[MAX_PARTICLES];	// Particle Array 
 
 
-int LoadGLTextures()									
+int LoadGLTextures(ImageIO* the_image,GLuint* texture )									
 {
         int Status=FALSE;								
-     
-		ImageIO* the_image = new ImageIO("C:/Users/Lanceton/Dropbox/compsci344_code/Final Project/Particle System Code/falme.ppm");
-
         
 			Status=TRUE;								
-			glGenTextures(1, &texture[0]);				
+			glGenTextures(1, texture);				
 
-			glBindTexture(GL_TEXTURE_2D, texture[0]);
+			glBindTexture(GL_TEXTURE_2D, *texture);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,the_image->getWidth(), the_image->getHeight(), 0, GL_RGB, GL_FLOAT, the_image->getImageDisplayArray());
@@ -88,11 +82,11 @@ GLvoid reshape(GLsizei width, GLsizei height)
 	glLoadIdentity();									
 }
 
-int InitGL(GLvoid)										
-{
-	LoadGLTextures();							
-	
-	
+
+void flameEmitterInit(){
+
+	ImageIO* the_image = new ImageIO("C:/Users/Lanceton/Dropbox/compsci344_code/Final Project/Particle System Code/falme.ppm");
+	LoadGLTextures(the_image, &texture[0]);							
 	glShadeModel(GL_SMOOTH);							
 	glClearColor(0.0f,0.0f,0.0f,0.0f);					
 	glClearDepth(1.0f);								
@@ -108,27 +102,29 @@ int InitGL(GLvoid)
 	{
 		particle[loop].active=true;								
 		particle[loop].life=1.0f;								
-		particle[loop].fade=float(rand()%100)/1000.0f+0.003f;	
+		particle[loop].fade=float(rand()%100)/1000.0f+0.01f;	
 		particle[loop].r=1;	
 		particle[loop].g=103/255.0;	
 		particle[loop].b=0;	
-		particle[loop].xi=float((rand()%50)-26.0f)*10.0f;		
-		particle[loop].yi=float((rand()%50)-25.0f)*10.0f;		
-		particle[loop].zi=float((rand()%50)-25.0f)*10.0f;	
+		particle[loop].xi=float((rand()%50)-26.0f)*3;		
+		particle[loop].yi=float((rand()%50)-25.0f)*3;		
+		particle[loop].zi=float((rand()%50)-25.0f)*3;	
 		particle[loop].xg=0.0f;									
 		particle[loop].yg=0.0f;								
 		particle[loop].zg=0.0f;									
 	}
 
+
+}
+int InitGL(GLvoid)										
+{
+	flameEmitterInit();
 	return TRUE;										
 }
 
-void  display(GLvoid)										
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-	glLoadIdentity();										
 
-	for (loop=0;loop<MAX_PARTICLES;loop++)					
+void flameEmitterDisplay(){
+for (loop=0;loop<MAX_PARTICLES;loop++)					
 	{
 		if (particle[loop].active)							
 		{
@@ -140,15 +136,15 @@ void  display(GLvoid)
 			glColor4f(particle[loop].r,particle[loop].g,particle[loop].b,particle[loop].life);
 
 			glBegin(GL_TRIANGLE_STRIP);						
-			    glTexCoord2d(1,1); glVertex3f(x+0.5f,y+0.5f,z); 
-				glTexCoord2d(0,1); glVertex3f(x-0.5f,y+0.5f,z); 
-				glTexCoord2d(1,0); glVertex3f(x+0.5f,y-0.5f,z); 
-				glTexCoord2d(0,0); glVertex3f(x-0.5f,y-0.5f,z); 
+			    glTexCoord2d(1,1); glVertex3f(x+1.0f,y+1.0f,z); 
+				glTexCoord2d(0,1); glVertex3f(x-1.0f,y+1.0f,z); 
+				glTexCoord2d(1,0); glVertex3f(x+1.0f,y-1.0f,z); 
+				glTexCoord2d(0,0); glVertex3f(x-1.0f,y-1.0f,z); 
 			glEnd();			
 			
-			particle[loop].x+=particle[loop].xi/(slowdown*1000);
-			particle[loop].y+=particle[loop].yi/(slowdown*1000);
-			particle[loop].z+=particle[loop].zi/(slowdown*1000);
+			particle[loop].x+=particle[loop].xi/(slowdown*500);
+			particle[loop].y+=particle[loop].yi/(slowdown*500);
+			particle[loop].z+=particle[loop].zi/(slowdown*500);
 
 			particle[loop].xi+=particle[loop].xg;			
 			particle[loop].yi+=particle[loop].yg;			
@@ -157,7 +153,7 @@ void  display(GLvoid)
 
 			if (particle[loop].life<0.0f)					
 			{
-				particle[loop].life=1.0f;					
+				/*particle[loop].life=1.0f;					
 				particle[loop].fade=float(rand()%100)/1000.0f+0.003f;	
 				particle[loop].x=0.0f;						
 				particle[loop].y=0.0f;						
@@ -167,16 +163,28 @@ void  display(GLvoid)
 				particle[loop].zi=float((rand()%60)-30.0f);	
 				particle[loop].r=1;			
 				particle[loop].g=103/255.0;			
-				particle[loop].b=0;			
+				particle[loop].b=0;			*/
 			}
 
 			
 
 			
 		}
-    }
+}
+
+
+}
+
+void  display(GLvoid)										
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+	glLoadIdentity();										
+	flameEmitterDisplay();
+	
+    
 										
 }
+
 
 
 void idle( void ){
