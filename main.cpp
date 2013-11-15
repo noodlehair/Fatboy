@@ -488,7 +488,7 @@ for (shock_loop=0;shock_loop<1;shock_loop++)
 		if (shock_particle[0].active)							
 		{
 			float x=shock_particle[0].x;						
-			float y=-5;						
+			float y=-3;						
 			float z=shock_particle[0].z+shock_zoom;					
 
 			//printf("%f %f %f\n", x,y,z);
