@@ -491,7 +491,7 @@ for (shock_loop=0;shock_loop<1;shock_loop++)
 			float y=-5;						
 			float z=shock_particle[0].z+shock_zoom;					
 
-			printf("%f %f %f\n", x,y,z);
+			//printf("%f %f %f\n", x,y,z);
 			glColor4f(shock_particle[0].r,shock_particle[0].g,shock_particle[0].b,shock_particle[0].life);
 			glBindTexture(GL_TEXTURE_2D,shock_texture[0]);	
 			glBegin(GL_TRIANGLE_STRIP);						
@@ -510,7 +510,7 @@ for (shock_loop=0;shock_loop<1;shock_loop++)
 			shock_particle[0].xi+=	shock_particle[0].xg;			
 			shock_particle[0].yi+=	shock_particle[0].yg;			
 			shock_particle[0].zi+=	shock_particle[0].zg;			
-			shock_particle[0].life-= shock_particle[0].fade +0.009 ;		
+			shock_particle[0].life-= shock_particle[0].fade +0.020 ;		
 
 			if (shock_particle[0].life<0.0f)					
 			{
