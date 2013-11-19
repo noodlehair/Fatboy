@@ -3,7 +3,7 @@
 //#include <windows.h>				
 #include <stdio.h>					
 #include "ImageIO.h"
-
+#include "LocalGraphicsLib.h"
 #define	MAX_PARTICLES	2000		
 #define MAX_FLASH_PARTICLES 500
 #define MAX_DEBRIS_PARTICLES 2000
@@ -58,8 +58,8 @@ GLuint	shock_loop;
 GLuint	shock_col;						
 GLuint	shock_delay;						
 GLuint	shock_texture[1];	
-float dx=2.0f*10;   // shockwave x increment size 
-float dz=2.0f*10;   // shockwave z increment size
+float dx=2.0f*20;   // shockwave x increment size 
+float dz=2.0f*20;   // shockwave z increment size
 float win_width = 768;
 float win_height = 512;
 
@@ -87,22 +87,6 @@ particles particle[MAX_PARTICLES];	// Particle Array
 particles flash_particle[MAX_FLASH_PARTICLES];
 particles debris_particle[MAX_DEBRIS_PARTICLES];
 particles shock_particle[MAX_SHOCK_PARTICLES];
-int LoadGLTextures(ImageIO* the_image,GLuint* texture )									
-{
-        int Status=FALSE;								
-        
-			Status=TRUE;								
-			glGenTextures(1, texture);				
-
-			glBindTexture(GL_TEXTURE_2D, *texture);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,the_image->getWidth(), the_image->getHeight(), 0, GL_RGB, GL_FLOAT, the_image->getImageDisplayArray());
-        
-
-        
-        return Status;									
-}
 
 GLvoid reshape(GLsizei width, GLsizei height)		
 {
@@ -133,7 +117,7 @@ void flameEmitterInit(){
 	glClearDepth(1.0f);								
 	glDisable(GL_DEPTH_TEST);							
 	glEnable(GL_BLEND);									
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);					
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA );					
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);	
 	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);				
 	glEnable(GL_TEXTURE_2D);							
@@ -488,7 +472,7 @@ for (shock_loop=0;shock_loop<1;shock_loop++)
 		if (shock_particle[0].active)							
 		{
 			float x=shock_particle[0].x;						
-			float y=-3;						
+			float y=-5;						
 			float z=shock_particle[0].z+shock_zoom;					
 
 			//printf("%f %f %f\n", x,y,z);
