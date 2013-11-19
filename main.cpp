@@ -5,8 +5,8 @@
 #include "ImageIO.h"
 #include "LocalGraphicsLib.h"
 #include "FlameEmitter.h"
-//#define	MAX_PARTICLES	2000		
-#define MAX_FLASH_PARTICLES 500
+#include "FlashEmitter.h"
+//#define MAX_FLASH_PARTICLES 500
 #define MAX_DEBRIS_PARTICLES 2000
 #define MAX_SHOCK_PARTICLES 1
 
@@ -15,29 +15,12 @@
 bool	active=TRUE;				
 					
 //flame emitter variable
-//float	slowdown=2.0f;				
-////float	xspeed;						
-////float	yspeed;						
-//float	zoom=-20.0f;				
-//GLuint	loop;						
-//GLuint	col;						
-//GLuint	delay;						
-//GLuint	texture[1];	
 
 FlameEmitter *flameEmitter;
 
 //flash emitter variables
-float	flash_slowdown=1000.0f;				
-//float	xspeed;						
-//float	yspeed;						
-float	flash_zoom=-40.0f;				
-
-GLuint	flash_loop;						
-GLuint	flash_col;						
-GLuint	flash_delay;						
-GLuint	flash_texture[1];	
-
-
+FlashEmitter *flashEmitter;
+ 
 //debris emitter variables
 float	debris_slowdown=40.0f;				
 //float	xspeed;						
@@ -66,7 +49,6 @@ float win_width = 768;
 float win_height = 512;
 
 
-particles flash_particle[MAX_FLASH_PARTICLES];
 particles debris_particle[MAX_DEBRIS_PARTICLES];
 particles shock_particle[MAX_SHOCK_PARTICLES];
 
@@ -88,47 +70,6 @@ GLvoid reshape(GLsizei width, GLsizei height)
 	glMatrixMode(GL_MODELVIEW);							
 	glLoadIdentity();									
 }
-
-
-
-
-void flashEmitterInit(){
-ImageIO* theflash_image = new ImageIO("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/flash.ppm");
-	LoadGLTextures(theflash_image, &flash_texture[0]);							
-	glShadeModel(GL_SMOOTH);							
-	glClearColor(0.0f,0.0f,0.0f,0.0f);					
-	glClearDepth(1.0f);								
-	glDisable(GL_DEPTH_TEST);							
-	glEnable(GL_BLEND);									
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);					
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);	
-	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);				
-	glEnable(GL_TEXTURE_2D);							
-	glBindTexture(GL_TEXTURE_2D,flash_texture[0]);			
-
-	for (flash_loop=0;flash_loop<MAX_FLASH_PARTICLES;flash_loop++)				
-	{
-		flash_particle[flash_loop].active=true;								
-		flash_particle[flash_loop].life=1.0f;								
-		flash_particle[flash_loop].fade=float(rand()%100)/10000.0f +0.01;	
-		flash_particle[flash_loop].r=227/255.0;	
-		flash_particle[flash_loop].g=140.0/255.0;	;	
-		flash_particle[flash_loop].b=45/255.0;	
-		flash_particle[flash_loop].xi=float((rand()%50)-26.0f)*2;		
-		flash_particle[flash_loop].yi=float((rand()%50)-25.0f)*2;			
-		flash_particle[flash_loop].zi=float((rand()%50)-25.0f)*2;		
-		flash_particle[flash_loop].xg=0.0f;									
-		flash_particle[flash_loop].yg=0.0f;								
-		flash_particle[flash_loop].zg=0.0f;									
-	}
-
-
-
-}
-
-
-
-
 
 void debrisEmitterInit(){
 	ImageIO* thedebris_image1 = new ImageIO("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/debris1.ppm");
@@ -229,69 +170,15 @@ void shockEmitterInit(){
 int InitGL(GLvoid)										
 {
 	flameEmitter = new FlameEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/falme.ppm");
-	
+	flashEmitter = new FlashEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/flash.ppm");
 	shockEmitterInit();
-	flashEmitterInit();
+	flashEmitter->flashEmitterInit();
 	flameEmitter->flameEmitterInit();
 	debrisEmitterInit();
 	
 	return TRUE;										
 }
 
-
-
-
-void flashEmitterDisplay(){
-for (flash_loop=0;flash_loop<MAX_FLASH_PARTICLES;flash_loop++)					
-	{
-		if (flash_particle[flash_loop].active)							
-		{
-			float x=flash_particle[flash_loop].x;						
-			float y=flash_particle[flash_loop].y;						
-			float z=flash_particle[flash_loop].z+flash_zoom;					
-
-			
-			glColor4f(flash_particle[flash_loop].r,flash_particle[flash_loop].g,flash_particle[flash_loop].b,flash_particle[flash_loop].life);
-			glBindTexture(GL_TEXTURE_2D,flash_texture[0]);	
-			glBegin(GL_TRIANGLE_STRIP);						
-			    glTexCoord2d(1,1); glVertex3f(x+2.0f,y+2.0f,z); 
-				glTexCoord2d(0,1); glVertex3f(x-2.0f,y+2.0f,z); 
-				glTexCoord2d(1,0); glVertex3f(x+2.0f,y-2.0f,z); 
-				glTexCoord2d(0,0); glVertex3f(x-2.0f,y-2.0f,z); 
-			glEnd();			
-			
-			flash_particle[flash_loop].x+=	flash_particle[flash_loop].xi/(flash_slowdown);
-			flash_particle[flash_loop].y+=	flash_particle[flash_loop].yi/(flash_slowdown);
-			flash_particle[flash_loop].z+=	flash_particle[flash_loop].zi/(flash_slowdown);
-
-			flash_particle[flash_loop].xi+=	flash_particle[flash_loop].xg;			
-			flash_particle[flash_loop].yi+=	flash_particle[flash_loop].yg;			
-			flash_particle[flash_loop].zi+=	flash_particle[flash_loop].zg;			
-			flash_particle[flash_loop].life-=	flash_particle[flash_loop].fade;		
-
-			if (flash_particle[flash_loop].life<0.0f)					
-			{
-				/*particle[loop].life=1.0f;					
-				particle[loop].fade=float(rand()%100)/1000.0f+0.003f;	
-				particle[loop].x=0.0f;						
-				particle[loop].y=0.0f;						
-				particle[loop].z=0.0f;						
-				particle[loop].xi=xspeed+float((rand()%60)-32.0f);	
-				particle[loop].yi=yspeed+float((rand()%60)-30.0f);	
-				particle[loop].zi=float((rand()%60)-30.0f);	
-				particle[loop].r=1;			
-				particle[loop].g=103/255.0;			
-				particle[loop].b=0;			*/
-			}
-
-			
-
-			
-		}
-}
-
-
-}
 
 
 
@@ -424,14 +311,11 @@ void  display(GLvoid)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	glLoadIdentity();										
 	shockEmitterDisplay();	
-	flashEmitterDisplay();
+	flashEmitter->flashEmitterDisplay();
 	flameEmitter->flameEmitterDisplay();
     debrisEmitterDisplay();
 									
 }
-
-
-
 
 void idle( void ){
     
