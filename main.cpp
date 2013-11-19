@@ -6,9 +6,10 @@
 #include "LocalGraphicsLib.h"
 #include "FlameEmitter.h"
 #include "FlashEmitter.h"
-//#define MAX_FLASH_PARTICLES 500
+#include "ShockwaveEmitter.h"
+
 #define MAX_DEBRIS_PARTICLES 2000
-#define MAX_SHOCK_PARTICLES 1
+
 
 
 				
@@ -34,23 +35,15 @@ GLuint	debris_texture[2];
 
 
 //shock emitter variables
-float	shock_slowdown=1000.0f;				
-//float	xspeed;						
-//float	yspeed;						
-float	shock_zoom=-100.0f;				
 
-GLuint	shock_loop;						
-GLuint	shock_col;						
-GLuint	shock_delay;						
-GLuint	shock_texture[1];	
-float dx=2.0f*20;   // shockwave x increment size 
-float dz=2.0f*20;   // shockwave z increment size
+
+ShockwaveEmitter *shockwaveEmitter;
 float win_width = 768;
 float win_height = 512;
 
 
 particles debris_particle[MAX_DEBRIS_PARTICLES];
-particles shock_particle[MAX_SHOCK_PARTICLES];
+
 
 GLvoid reshape(GLsizei width, GLsizei height)		
 {
@@ -133,45 +126,14 @@ void debrisEmitterInit(){
 
 
 
-void shockEmitterInit(){
-	ImageIO* theshock_image = new ImageIO("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/shock.ppm");
-	LoadGLTextures(theshock_image, &shock_texture[0]);							
-	glShadeModel(GL_SMOOTH);							
-	glClearColor(0.0f,0.0f,0.0f,0.0f);					
-	glClearDepth(1.0f);								
-	glDisable(GL_DEPTH_TEST);							
-	glEnable(GL_BLEND);									
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);					
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);	
-	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);				
-	glEnable(GL_TEXTURE_2D);							
-	glBindTexture(GL_TEXTURE_2D,shock_texture[0]);			
 
-	for (shock_loop=0;shock_loop<MAX_SHOCK_PARTICLES;shock_loop++)				
-	{
-		shock_particle[shock_loop].active=true;								
-		shock_particle[shock_loop].life=1.0f;								
-		shock_particle[shock_loop].fade=float(rand()%100)/100000.0f;	
-		shock_particle[shock_loop].r=1.0;	
-		shock_particle[shock_loop].g=103/255.0;	;	
-		shock_particle[shock_loop].b=0.0;	
-		shock_particle[shock_loop].xi=float((rand()%50)-26.0f)*15;		
-		shock_particle[shock_loop].yi=float((rand()%50)-25.0f)*15;			
-		shock_particle[shock_loop].zi=float((rand()%50)-25.0f)*15;		
-		shock_particle[shock_loop].xg=0.0f;									
-		shock_particle[shock_loop].yg=0.0f;								
-		shock_particle[shock_loop].zg=0.0f;									
-	}
-
-
-
-}
 
 int InitGL(GLvoid)										
 {
 	flameEmitter = new FlameEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/falme.ppm");
 	flashEmitter = new FlashEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/flash.ppm");
-	shockEmitterInit();
+	shockwaveEmitter = new ShockwaveEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/shock.ppm");
+	shockwaveEmitter->shockwaveEmitterInit();
 	flashEmitter->flashEmitterInit();
 	flameEmitter->flameEmitterInit();
 	debrisEmitterInit();
@@ -245,77 +207,19 @@ for (debris_loop=MAX_DEBRIS_PARTICLES/2;debris_loop<MAX_DEBRIS_PARTICLES;debris_
 
 
 
-
-
-
-
-
-
-
-void shockEmitterDisplay(){
-	
-	
-for (shock_loop=0;shock_loop<1;shock_loop++)					
-	{
-		if (shock_particle[0].active)							
-		{
-			float x=shock_particle[0].x;						
-			float y=-5;						
-			float z=shock_particle[0].z+shock_zoom;					
-
-			//printf("%f %f %f\n", x,y,z);
-			glColor4f(shock_particle[0].r,shock_particle[0].g,shock_particle[0].b,shock_particle[0].life);
-			glBindTexture(GL_TEXTURE_2D,shock_texture[0]);	
-			glBegin(GL_TRIANGLE_STRIP);						
-			    glTexCoord2d(1,1); glVertex3f(x+dx,y,z+dz); 
-				glTexCoord2d(0,1); glVertex3f(x-dx,y,z+dz); 
-				glTexCoord2d(1,0); glVertex3f(x+dx,y,z-dz); 
-				glTexCoord2d(0,0); glVertex3f(x-dx,y,z-dz); 
-			glEnd();			
-			//printf("hrllo");
-			dx +=0.5f;
-			dz +=0.5f;
-			shock_particle[0].x+=0;	//shock_particle[0].xi/(slowdown*500);;
-			shock_particle[0].y+=0;	//shock_particle[0].yi/(slowdown*500);;
-			shock_particle[0].z+=0;	//shock_particle[0].zi/(slowdown*500);;
-
-			shock_particle[0].xi+=	shock_particle[0].xg;			
-			shock_particle[0].yi+=	shock_particle[0].yg;			
-			shock_particle[0].zi+=	shock_particle[0].zg;			
-			shock_particle[0].life-= shock_particle[0].fade +0.020 ;		
-
-			if (shock_particle[0].life<0.0f)					
-			{
-				/*particle[loop].life=1.0f;					
-				particle[loop].fade=float(rand()%100)/1000.0f+0.003f;	
-				particle[loop].x=0.0f;						
-				particle[loop].y=0.0f;						
-				particle[loop].z=0.0f;						
-				particle[loop].xi=xspeed+float((rand()%60)-32.0f);	
-				particle[loop].yi=yspeed+float((rand()%60)-30.0f);	
-				particle[loop].zi=float((rand()%60)-30.0f);	
-				particle[loop].r=1;			
-				particle[loop].g=103/255.0;			
-				particle[loop].b=0;			*/
-			}
-
-			
-
-			
-		}
-}
-
-}
 void  display(GLvoid)										
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
 	glLoadIdentity();										
-	shockEmitterDisplay();	
+	shockwaveEmitter->shockwaveEmitterDisplay();	
 	flashEmitter->flashEmitterDisplay();
 	flameEmitter->flameEmitterDisplay();
     debrisEmitterDisplay();
 									
 }
+
+
+
 
 void idle( void ){
     
