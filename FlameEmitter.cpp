@@ -8,7 +8,7 @@ FlameEmitter :: FlameEmitter(const char* file_name){
 	image = new ImageIO(file_name);
 	slowdown=2.0f;
 	zoom=-20.0f;
-	
+    initFlag =false;
 
 }
 FlameEmitter :: ~FlameEmitter(void){
@@ -28,9 +28,13 @@ void FlameEmitter::flameEmitterInit(){
 	glHint(GL_POINT_SMOOTH_HINT,GL_NICEST);				
 	glEnable(GL_TEXTURE_2D);							
 	glBindTexture(GL_TEXTURE_2D,texture[0]);			
-
+	float x=-1.1, y=1.1;
 	for (loop=0;loop<MAX_PARTICLES;loop++)				
 	{
+		particle[loop].x =x;
+		particle[loop].y =y;
+		x+=0.001;
+		y-=0.001;
 		particle[loop].active=true;								
 		particle[loop].life=1.0f;								
 		particle[loop].fade=float(rand()%100)/1000.0f+0.01f;	
@@ -47,6 +51,11 @@ void FlameEmitter::flameEmitterInit(){
 
 }
 void FlameEmitter::flameEmitterDisplay(){
+
+	if(!initFlag){
+	flameEmitterInit();	
+	 initFlag =true;
+	}
 for (loop=0;loop<MAX_PARTICLES;loop++)					
 	{
 		if (particle[loop].active)							
@@ -59,10 +68,10 @@ for (loop=0;loop<MAX_PARTICLES;loop++)
 			glColor4f(particle[loop].r,particle[loop].g,particle[loop].b,particle[loop].life);
 			glBindTexture(GL_TEXTURE_2D,texture[0]);	
 			glBegin(GL_TRIANGLE_STRIP);						
-			glTexCoord2d(1,1); glVertex3f(x+1.0f,y+1.0f,z); 
-			glTexCoord2d(0,1); glVertex3f(x-1.0f,y+1.0f,z); 
-			glTexCoord2d(1,0); glVertex3f(x+1.0f,y-1.0f,z); 
-			glTexCoord2d(0,0); glVertex3f(x-1.0f,y-1.0f,z); 
+			    glTexCoord2d(1,1); glVertex3f(x+1.0f,y+1.0f,z); 
+				glTexCoord2d(0,1); glVertex3f(x-1.0f,y+1.0f,z); 
+				glTexCoord2d(1,0); glVertex3f(x+1.0f,y-1.0f,z); 
+				glTexCoord2d(0,0); glVertex3f(x-1.0f,y-1.0f,z); 
 			glEnd();			
 			
 			particle[loop].x+=particle[loop].xi/(slowdown*500);
