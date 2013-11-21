@@ -10,7 +10,7 @@ ShockwaveEmitter :: ShockwaveEmitter(const char* file_name){
 	zoom=-100.0f;	
 	dx=2.0f*20;   
     dz=2.0f*20;   
-
+	initFlag =false;
 }
 ShockwaveEmitter :: ~ShockwaveEmitter(void){
 delete [] image;
@@ -51,6 +51,10 @@ void ShockwaveEmitter::shockwaveEmitterInit(){
 
 }
 void ShockwaveEmitter::shockwaveEmitterDisplay(){
+	if(!initFlag){
+	shockwaveEmitterInit();	
+	 initFlag =true;
+	}
 for (loop=0;loop<MAX_SHOCK_PARTICLES;loop++)					
 	{
 		if (shockwave_particle[0].active)							
