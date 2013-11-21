@@ -17,5 +17,5 @@ public :
 	 GLuint	col;						
 	 GLuint	delay;						
 	 GLuint	texture[2];	
-	
+	 bool initFlag;
 };
