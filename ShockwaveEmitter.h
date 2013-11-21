@@ -17,6 +17,6 @@ public :
 	 GLuint	delay;						
 	 GLuint	texture[1];
 	 float dx;   // shockwave x increment size 
-	float dz;   // shockwave z increment size
-	
+	 float dz;   // shockwave z increment size
+	 bool initFlag;
 };
