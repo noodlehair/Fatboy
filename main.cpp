@@ -54,10 +54,7 @@ int InitGL(GLvoid)
 	debrisEmitter = new DebrisEmitter("C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/debris1.ppm",
 		                                "C:/Users/Lanceton/Dropbox/Compsci 344 Final Project/Particle System Code/debris2.ppm");
 	
-	shockwaveEmitter->shockwaveEmitterInit();
-	flashEmitter->flashEmitterInit();
-	flameEmitter->flameEmitterInit();
-	debrisEmitter->debrisEmitterInit();
+
 	
 	return TRUE;										
 }
@@ -65,9 +62,9 @@ int InitGL(GLvoid)
 void  display(GLvoid)										
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
-	glLoadIdentity();										
-	shockwaveEmitter->shockwaveEmitterDisplay();	
+	glLoadIdentity();	
 	flashEmitter->flashEmitterDisplay();
+	shockwaveEmitter->shockwaveEmitterDisplay();	
 	flameEmitter->flameEmitterDisplay();
     debrisEmitter->debrisEmitterDisplay();
 									
