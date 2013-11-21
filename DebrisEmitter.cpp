@@ -9,7 +9,7 @@ DebrisEmitter :: DebrisEmitter(const char* file_name_1,const char* file_name_2 )
 	image2 = new ImageIO(file_name_2);
 	slowdown=40.0f;
 	zoom=-100.0f;	
-	
+	initFlag=false;
 
 }
 DebrisEmitter :: ~DebrisEmitter(void){
@@ -78,6 +78,11 @@ void DebrisEmitter::debrisEmitterInit(){
 
 }
 void DebrisEmitter::debrisEmitterDisplay(){
+
+	if(!initFlag){
+	debrisEmitterInit();	
+	 initFlag =true;
+	}
 for (loop=0;loop<MAX_DEBRIS_PARTICLES/2;loop++)					
 	{
 		if (debris_particle[loop].active)							
