@@ -10,7 +10,7 @@ public:
 
 	void draw(
 		float ambient, float diffuse, float specular, float emission, float shininess,
-		float bullit_x, float bullit_y, float bullit_z, bool* ifDraw);
+		float bullit_x, float bullit_y, float bullit_z, bool* ifDraw, float angle, float lookAt_z, bool shoot);
 
 private:
     float radius;
