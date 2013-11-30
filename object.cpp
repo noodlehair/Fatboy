@@ -20,7 +20,7 @@ using namespace std;
  
     void object::draw(
         float ambient, float diffuse, float specular, float emission, float shininess,
-		float bullit_x, float bullit_y, float bullit_z, bool* ifDraw){
+		float bullit_x, float bullit_y, float bullit_z, bool* ifDraw, float angle, float lookAt_z, bool shoot){
 
         glPushMatrix();
          
@@ -37,17 +37,39 @@ using namespace std;
         glMaterialfv(GL_FRONT, GL_EMISSION,  mat_emission);         
         glMaterialf (GL_FRONT, GL_SHININESS, mat_shininess);
 
-         if(pow(bullit_x-position_x, 2)+pow(bullit_y-position_y, 2)<pow(radius, 2) && position_z-bullit_z<radius 
-			 &&position_z-bullit_z>-radius){
-			 glutSolidSphere(radius/10, 50,50);
+		if(angle!=0){
+         if(shoot && tan(angle)<(1.0*(-position_x+bullit_x+radius)/(-position_y+lookAt_z)) 
+			 && tan(angle)>(1.0*(position_x-bullit_x-radius)/(-position_y+bullit_y))
+			 && position_y-radius<bullit_y && position_y+radius>bullit_y 
+			 && pow(bullit_x-position_x,2)+pow(lookAt_z-position_z,2)<pow(bullit_z-lookAt_z, 2))
+			 //pow(bullit_x-position_x, 2)+pow(bullit_y-position_y, 2)<pow(radius, 2) && position_z-bullit_z<radius 
+			// &&position_z-bullit_z>-radius)
+		 {
+			 //glutSolidSphere(radius/10, 50,50);
 			 drawIt=false;
 			 *ifDraw=false;
 		}
-		 if(ifDraw && drawIt&&!(pow(bullit_x-position_x, 2)+pow(bullit_y-position_y, 2)<pow(radius, 2) 
-			 && position_z-bullit_z<radius &&position_z-bullit_z>-radius)){
+		 if(ifDraw && drawIt&&!(shoot && tan(angle)<(1.0*(-position_x+bullit_x+radius)/(-position_y+lookAt_z)) 
+			 && tan(angle)>(1.0*(position_x-bullit_x-radius)/(-position_y+bullit_y))
+			 && position_y-radius<bullit_y && position_y+radius>bullit_y 
+			 && pow(bullit_x-position_x,2)+pow(lookAt_z-position_z,2)<pow(bullit_z-lookAt_z, 2))){
 			 glColor3f(color_r,color_g,color_b);
 			glutSolidSphere(radius, 50,50);
 		 }
+		}
+		else{
+			if(shoot && pow(bullit_x-position_x, 2)+pow(bullit_y-position_y, 2)<pow(radius, 2) && position_z-bullit_z<radius 
+			 &&position_z-bullit_z>-radius){
+			 //glutSolidSphere(radius/10, 50,50);
+			 drawIt=false;
+			 *ifDraw=false;
+			}
+			if(ifDraw && drawIt&&!(shoot && pow(bullit_x-position_x, 2)+pow(bullit_y-position_y, 2)<pow(radius, 2) && position_z-bullit_z<radius 
+			 &&position_z-bullit_z>-radius)){
+				 glColor3f(color_r,color_g,color_b);
+			glutSolidSphere(radius, 50,50);
+		 }
+		}
          
         glPopMatrix();
     }
