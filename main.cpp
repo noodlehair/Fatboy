@@ -359,52 +359,54 @@ void display(void)
 	//glTranslatef(lookAtLocationX, 0, lookAtLocationZ);
 
 	if (ifDraw){
-		//glEnable(GL_DEPTH_TEST);
 		object sun(0.5, 0, 0, -15, 0.95, 0.63, 0);
-		sun.draw(0, 0, 0, 0.5, 0, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw);
+		sun.draw(0, 0, 0, 0.5, 0, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(0, 0, -15, 0.5, &ifExplostion,p);
 	if (ifDraw1){
-		//glEnable(GL_DEPTH_TEST);
 		object planet1(0.1, 0.8, 0, -15, 0.8, 0.1, 0.21);
-		planet1.draw(1, 0, 0, 0.3, 20, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw1);
+		planet1.draw(1, 0, 0, 0.3, 20, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw1, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(0.8, 0, -15, 0.1, &ifExplostion1,p1);
 	if (ifDraw2){
-		//glEnable(GL_DEPTH_TEST);
 		object planet2(0.15, 1.2, 0, -15, 0, 1.0, 0.41);
-		planet2.draw(0, 1, 0, 0, 30, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw2);
+		planet2.draw(0, 1, 0, 0, 30, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw2, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(1.2, 0, -15, 0.15, &ifExplostion2,p2);
 	if (ifDraw3){
-		//glEnable(GL_DEPTH_TEST);
 		object planet3(0.18, 0, 1.8, -15, .5, 0, 0);
-		planet3.draw(0, 0, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw3);
+		planet3.draw(0, 0, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw3, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(0, 1.8, -15, 0.18, &ifExplostion3,p3);
 	if (ifDraw4){
-		//glEnable(GL_DEPTH_TEST);
 		object planet4(0.22, 0.5, 0.5, -12.5, 0, 0.2, 0.321);
-		planet4.draw(1, 0, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw4);
+		planet4.draw(1, 0, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw4, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(0.5, 0.5, -12.5, 0.22, &ifExplostion4,p4);
 	if (ifDraw5){
-		//glEnable(GL_DEPTH_TEST);
 		object planet5(0.25, -3.2, 0, -14, 0, 0.4, 0.21);
-		planet5.draw(0, 1, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw5);
+		planet5.draw(0, 1, 1, 0, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw5, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(-3.2, 0, -14, 0.25, &ifExplostion5,p5);
 	if (ifDraw6){
-		//glEnable(GL_DEPTH_TEST);
 		object planet6(0.3, 4.0, -2, -15, 0, 0.10, 0.31);
-		planet6.draw(0.5, 0.5, 0.5, 0.5, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw6);
+		planet6.draw(0.5, 0.5, 0.5, 0.5, 40, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw6, rotateA, lookAtLocationY,shoot_ball);
 	}
-
+	else
+		beingShoot(4.0, -2, -15, 0.3, &ifExplostion6,p6);
 	if (ifDraw7){
-		//glEnable(GL_DEPTH_TEST);
 		object planet7(0.4, 1, 2, -5, 0.2, 0, 0.21);
-		planet7.draw(1, 1, 1, 0, 50, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw7);
+		planet7.draw(1, 1, 1, 0, 50, lookAtLocationX, lookAtLocationY, ball_z_distance, &ifDraw7, rotateA, lookAtLocationY,shoot_ball);
 	}
+	else
+		beingShoot(1, 2, -5, 0.4, &ifExplostion7,p7);
+		
 	glPushMatrix();
 
 	glTranslatef(lookAtLocationX, lookAtLocationY, ball_z_distance);
